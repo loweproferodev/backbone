@@ -1343,6 +1343,10 @@
       emulateHTTP: Backbone.emulateHTTP,
       emulateJSON: Backbone.emulateJSON
     });
+    
+    if(method === 'create') {
+      options.emulateJSON = true;
+    }
 
     // Default JSON-request options.
     var params = {type: type, dataType: 'json'};

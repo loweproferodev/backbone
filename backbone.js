@@ -67,6 +67,11 @@
   // `application/x-www-form-urlencoded` instead and will send the model in a
   // form param named `model`.
   Backbone.emulateJSON = false;
+  
+  //Enclosure The request data into the way ofform data
+  //xxx=zzz&yyy=aaa...
+
+  Backbone.emulateForm = true;
 
   // Proxy Backbone class methods to Underscore functions, wrapping the model's
   // `attributes` object or collection's `models` array behind the scenes.
@@ -1341,7 +1346,8 @@
     // Default options, unless specified.
     _.defaults(options || (options = {}), {
       emulateHTTP: Backbone.emulateHTTP,
-      emulateJSON: Backbone.emulateJSON
+      emulateJSON: Backbone.emulateJSON,
+      emulateForm: Backbone.emulateForm
     });
 
     // Default JSON-request options.
@@ -1356,12 +1362,19 @@
     if (options.data == null && model && (method === 'create' || method === 'update' || method === 'patch')) {
       params.contentType = 'application/json';
       params.data = JSON.stringify(options.attrs || model.toJSON(options));
+
+      options.emulateJSON = true;
     }
 
     // For older servers, emulate JSON by encoding the request into an HTML-form.
     if (options.emulateJSON) {
       params.contentType = 'application/x-www-form-urlencoded';
-      params.data = params.data ? {model: params.data} : {};
+
+      if (options.emulateForm) {
+        params.data = params.data ? params.data.replace(/:/g, "=").replace(/"/g,"").replace(/,/g,"&").replace(/\{|\}/g,"") : "";
+      }else {
+        params.data = params.data ? {model: params.data} : {};
+      }
     }
 
     // For older servers, emulate HTTP by mimicking the HTTP method with `_method`

@@ -616,7 +616,7 @@
         (attrs = {})[key] = val;
       }
 
-      options = _.extend({validate: true, parse: true}, options);
+      options = _.extend({validate: true, parse: true, validate_all: true}, options);
       var wait = options.wait;
 
       // If we're not waiting and attributes exist, save acts as
@@ -726,7 +726,9 @@
     // returning `true` if all is well. Otherwise, fire an `"invalid"` event.
     _validate: function(attrs, options) {
       if (!options.validate || !this.validate) return true;
-      attrs = _.extend({}, this.attributes, attrs);
+      if (options.validate_all) {
+        attrs = _.extend({}, this.attributes, attrs);
+      }
       var error = this.validationError = this.validate(attrs, options) || null;
       if (!error) return true;
       this.trigger('invalid', this, error, _.extend(options, {validationError: error}));

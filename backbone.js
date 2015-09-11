@@ -1363,7 +1363,9 @@
     // Ensure that we have the appropriate request data.
     if (options.data == null && model && (method === 'create' || method === 'update' || method === 'patch')) {
       params.contentType = 'application/json';
-      params.data = JSON.stringify(options.attrs || model.toJSON(options));
+      params.data = JSON.stringify(options.attrs || _.omit(model.toJSON(options),function(val,key,obj){
+            return key.match(/^__/);
+          }));
 
       options.emulateJSON = true;
     }

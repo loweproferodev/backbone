@@ -1366,8 +1366,6 @@
       params.data = JSON.stringify(options.attrs || _.omit(model.toJSON(options),function(val,key,obj){
             return key.match(/^__/);
           }));
-
-      options.emulateJSON = true;
     }
 
     // For older servers, emulate JSON by encoding the request into an HTML-form.
